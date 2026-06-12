@@ -1,0 +1,27 @@
+# =============================================================================
+# StarAI Exchange — Server-specific .gitignore
+# (Sits next to server/package.json. The root .gitignore handles most cases;
+#  this file is the place to ignore backend-only build artefacts.)
+# =============================================================================
+
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# Environment files — never commit secrets.
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+*.lcov
+
+# OS junk
+.DS_Store
+Thumbs.db

@@ -1,0 +1,86 @@
+# =============================================================================
+# StarAI Exchange — Root .gitignore
+# Works for both the Vite/React frontend (root) and the Node/Express server
+# under ./server/. Each subpackage may have its own .gitignore for
+# package-manager-specific files, but this file covers the common cases.
+# =============================================================================
+
+# ---------- Dependencies ----------
+node_modules/
+.pnp/
+.pnp.js
+.yarn/
+.pnpm-store/
+
+# ---------- Build output ----------
+dist/
+dist-ssr/
+build/
+out/
+*.tsbuildinfo
+
+# ---------- Environment files (SECRETS — never commit) ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Logs ----------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ---------- Editor / IDE ----------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- OS / misc ----------
+.DS_Store
+ehthumbs.db
+ehthumbs_vista.db
+.Trash-*
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ---------- Testing / coverage ----------
+coverage/
+.nyc_output/
+*.lcov
+
+# ---------- Caches ----------
+.cache/
+.eslintcache
+.parcel-cache/
+.vite/
+.turbo/
+.turbo-cache/
+
+# ---------- Local data / runtime artefacts ----------
+*.sqlite
+*.sqlite3
+*.db
+*.pid
+*.seed
+*.pid.lock
+
+# ---------- Vite-specific ----------
+.vite/
+
+# ---------- TypeScript ----------
+*.tsbuildinfo

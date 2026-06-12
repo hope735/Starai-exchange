@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-bg-primary text-text-primary font-sans;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0e11;
+}
+::-webkit-scrollbar-thumb {
+  background: #2b3139;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #363c45;
+}
+
+/* Number font */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reusable component classes */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-brand-gold text-bg-primary hover:bg-brand-goldLight;
+  }
+  .btn-up {
+    @apply btn bg-up text-white hover:opacity-90;
+  }
+  .btn-down {
+    @apply btn bg-down text-white hover:opacity-90;
+  }
+  .btn-ghost {
+    @apply btn bg-bg-tertiary text-text-primary hover:bg-bg-hover;
+  }
+  .btn-outline {
+    @apply btn border border-border text-text-primary hover:bg-bg-tertiary;
+  }
+  .input {
+    @apply w-full rounded-md bg-bg-primary border border-border px-3 py-2 text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold/60;
+  }
+  .card {
+    @apply bg-bg-secondary border border-border rounded-lg;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-full bg-bg-tertiary px-2.5 py-0.5 text-xs font-medium text-text-secondary;
+  }
+  .label {
+    @apply text-xs font-medium uppercase tracking-wide text-text-tertiary;
+  }
+  .stat {
+    @apply text-2xl font-semibold tabular-nums text-text-primary;
+  }
+}
+
+/* Number flash helpers used by the market table */
+.flash-up {
+  animation: flashUp 1.2s ease-out;
+}
+.flash-down {
+  animation: flashDown 1.2s ease-out;
+}
+@keyframes flashUp {
+  0% {
+    background-color: rgba(2, 192, 118, 0.35);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+@keyframes flashDown {
+  0% {
+    background-color: rgba(246, 70, 93, 0.35);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
