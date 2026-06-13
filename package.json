@@ -1,14 +1,16 @@
 {
   "name": "starai-exchange",
-
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "homepage": "https://hope735.github.io/Starai-exchange",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -22,6 +24,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.3",
