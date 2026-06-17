@@ -22,6 +22,24 @@
       rel="stylesheet"
     />
     <title>StarAI Exchange | Buy, Sell & Trade Crypto</title>
+    <style>
+      /*
+       * Inline fallback styles. If Tailwind / the bundled CSS ever fails to
+       * load (CDN blocked, hash mismatch, wrong path on a new host) we still
+       * get a sensible dark background + visible text colour instead of a
+       * blank black screen. These rules are intentionally minimal — the
+       * real theme lives in Tailwind.
+       */
+      html, body { height: 100%; margin: 0; }
+      body {
+        background-color: #0b0e11;
+        color: #eaecef;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      #root { min-height: 100%; display: block; }
+    </style>
   </head>
   <body class="bg-bg-primary text-text-primary antialiased">
     <div id="root"></div>
