@@ -84,3 +84,5 @@ coverage/
 
 # ---------- TypeScript ----------
 *.tsbuildinfo
+
+*.ps1
