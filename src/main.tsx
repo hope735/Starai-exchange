@@ -5,25 +5,42 @@ import App from './App';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import './index.css';
 
-// Detect the GitHub-Pages subfolder (e.g. "/Starai-exchange/") at runtime
-// so the React Router `basename` works for BOTH local dev and production.
-// Vite injects `import.meta.env.BASE_URL` from the `base` config in
-// vite.config.ts, so we don't hard-code the repo name here.
+// Detect the host path the SPA is served from so the React Router
+// `basename` is correct on BOTH local dev and production.
 //
-// IMPORTANT: we MUST pass `undefined` (not an empty string) to BrowserRouter
-// when the app is served from the domain root. react-router v6 will treat
-// an empty-string basename as "/" and `stripBasename('/wallet', '')` returns
-// null, which causes the router to silently render nothing — exactly the
-// "blank black page" symptom users hit on Vercel.
-const rawBase = import.meta.env.BASE_URL || '/';
-const normalized = rawBase === '/' ? '/' : rawBase.replace(/\/+$/, '');
-const basename = normalized === '/' ? undefined : normalized;
+//   vite.config.ts has `base: './'` so that the same build can be served
+//   from `/`, `/Starai-exchange/`, or any other subfolder. That makes
+//   `import.meta.env.BASE_URL` resolve to "./" on root hosts (Vercel,
+//   Netlify) and to "/Starai-exchange/" on GitHub Pages.
+//
+// We must pass `undefined` (NOT "." or "") to BrowserRouter on root hosts.
+// In react-router v6, a non-undefined basename causes
+// `stripBasename('/wallet', '.')` to return `null` → the router silently
+// renders nothing → fully blank black page. This was the bug that
+// shipped before; the logic below handles both root hosts AND subfolder
+// hosts correctly.
+function resolveBasename(): string | undefined {
+  const raw = import.meta.env.BASE_URL || '/';
+  // Normalise: strip trailing slashes, drop a leading "." that Vite emits
+  // for relative base paths, and ignore an empty result.
+  let cleaned = raw.replace(/\/+$/, '');
+  if (cleaned === '' || cleaned === '.' || cleaned === './') {
+    return undefined;
+  }
+  // For a subfolder host like "/Starai-exchange", react-router wants the
+  // basename to start with a slash but not end with one.
+  if (!cleaned.startsWith('/')) {
+    cleaned = '/' + cleaned;
+  }
+  return cleaned;
+}
+const basename = resolveBasename();
 
-// Inline boot-error overlay: if anything below throws synchronously during
-// module evaluation (bad import, syntax error after a minification issue,
-// etc.) we want the user to see a visible error message instead of a
-// silent black screen. The overlay also catches errors thrown during the
-// React mount that escape the ErrorBoundary.
+// Inline boot-error overlay: if anything throws synchronously during module
+// evaluation (bad import, syntax error after a minification issue, etc.)
+// we want the user to see a visible error message instead of a silent
+// black screen. The overlay also catches errors thrown during the React
+// mount that escape the ErrorBoundary.
 function showBootError(message: string, stack?: string) {
   const root = document.getElementById('root');
   if (!root) return;

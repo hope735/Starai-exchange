@@ -7,8 +7,11 @@
       works for `vite preview` locally AND for GitHub Pages at
       https://<user>.github.io/Starai-exchange/. Do NOT change these to
       absolute `/...` paths.
+
+      The `?v=2` cache-buster on the script + stylesheet helps Vercel /
+      browsers skip a stale cached HTML page after a redeploy.
     -->
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=2" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0e11" />
     <meta
@@ -39,10 +42,39 @@
         -moz-osx-font-smoothing: grayscale;
       }
       #root { min-height: 100%; display: block; }
+      /* Inline loading skeleton so the user always sees something while the
+         JS bundle parses + React mounts. Hidden once React renders the app. */
+      #boot-loader {
+        display: flex; align-items: center; justify-content: center;
+        flex-direction: column; gap: 16px;
+        min-height: 100vh;
+        color: #f0b90b;
+      }
+      #boot-loader .logo {
+        font-size: 22px; font-weight: 800; letter-spacing: 0.02em;
+      }
+      #boot-loader .bar {
+        width: 220px; height: 4px; border-radius: 999px;
+        background: #1e2329; overflow: hidden; position: relative;
+      }
+      #boot-loader .bar::before {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(90deg, transparent, #f0b90b, transparent);
+        animation: bootBar 1.2s linear infinite;
+      }
+      @keyframes bootBar { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
     </style>
   </head>
   <body class="bg-bg-primary text-text-primary antialiased">
-    <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
+    <div id="root">
+      <div id="boot-loader">
+        <div class="logo">StarAI Exchange</div>
+        <div class="bar"></div>
+        <noscript style="color:#f6465d;margin-top:8px">
+          JavaScript is required to use StarAI Exchange.
+        </noscript>
+      </div>
+    </div>
+    <script type="module" src="./src/main.tsx?v=2"></script>
   </body>
 </html>
