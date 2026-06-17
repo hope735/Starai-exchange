@@ -1,0 +1,77 @@
+# GitHub Actions — backend CI/CD for StarAI Exchange.
+#
+# On every push to `main` (and on PRs), this workflow:
+#   1. Installs dependencies
+#   2. Typechecks the server
+#   3. Builds the server (compile TS -> dist/)
+#   4. Runs the smoke-test (boot + /healthz) against a temporary in-memory DB
+#      or, when DATABASE_URL secrets are available, the real TiDB Cloud DB
+#
+# You can watch the build in real time at:
+#   https://github.com/hope735/Starai-exchange/actions
+
+name: backend-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'server/**'
+
+jobs:
+  test:
+    name: typecheck + build + smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Typecheck
+        run: npx tsc -p tsconfig.json --noEmit
+
+      - name: Build (tsc → dist/)
+        run: npm run build
+
+      - name: Verify dist/ output
+        run: |
+          ls -la dist/
+          test -f dist/index.js || (echo "ERROR: dist/index.js missing" && exit 1)
+
+      # Optional: run a real smoke test against the live TiDB Cloud DB if the
+      # secret is configured in the repo's GitHub Actions secrets.
+      - name: Smoke test against TiDB Cloud
+        if: ${{ secrets.DB_HOST != '' }}
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_SSL: 'true'
+        run: |
+          node dist/index.js &
+          SERVER_PID=$!
+          sleep 5
+          curl -fsS http://127.0.0.1:4000/healthz || (echo 'healthz failed' && kill $SERVER_PID && exit 1)
+          echo '--- ok ---'
+          kill $SERVER_PID || true
