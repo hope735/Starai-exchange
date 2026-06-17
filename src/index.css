@@ -103,3 +103,54 @@ body {
     background-color: transparent;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Mobile bottom nav animations
+ *   - .mobnav-pulse: a soft expanding ring on the active tab's accent dot
+ *   - .mobnav-tap:   a one-shot burst ring at click time (optional)
+ * ------------------------------------------------------------------------- */
+@keyframes mobnavPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.65);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 8px rgba(255, 193, 7, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+  }
+}
+.mobnav-pulse {
+  animation: mobnavPulse 1.8s ease-out infinite;
+}
+
+@keyframes mobnavTap {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.mobnav-tap-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgba(255, 193, 7, 0.65);
+  animation: mobnavTap 480ms ease-out forwards;
+  pointer-events: none;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .mobnav-pulse,
+  .mobnav-tap-ring::after {
+    animation: none;
+  }
+}

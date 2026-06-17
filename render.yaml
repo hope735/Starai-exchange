@@ -1,0 +1,62 @@
+# render.yaml — Render Blueprint
+# Reference: https://render.com/docs/blueprint-spec
+#
+# Drop this file at the repo root and Render will offer a one-click
+# "Apply Blueprint" option that creates the service automatically.
+#
+# After applying, go to the new service's "Environment" tab and set the
+# secrets listed in `envVars` (or pre-fill them in this file if you don't
+# mind the values being visible in the repo — DO NOT commit real DB
+# credentials; use the secretStore: "sync" option to push them via the
+# Render dashboard instead).
+
+services:
+  - type: web
+    name: starai-exchange-backend
+    runtime: node
+    # Use Node 20 LTS — matches the project's `engines.node`.
+    plan: free
+    region: oregon
+    branch: main
+    # The server lives under starai-exchange/server/ in the repo.
+    rootDir: starai-exchange/server
+    buildCommand: npm install --no-audit --no-fund
+    # We use tsx at runtime to run TypeScript directly (no separate build
+    # step needed). Render honours the `start` script in package.json.
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NPM_VERSION
+        value: 10.8.2
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGIN
+        value: https://hope735.github.io
+      # --- Database (TiDB Cloud) ---
+      # Either paste values here OR set them in the Render dashboard so they
+      # stay out of git. Defaults below are illustrative; do NOT commit real
+      # production passwords.
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 4000
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: starai_exchange
+      - key: DB_SSL
+        value: "true"
+      # --- Auth ---
+      - key: JWT_SECRET
+        generateValue: true
+      # --- Market data proxy ---
+      - key: COINGECKO_API
+        value: https://api.coingecko.com/api/v3
+      - key: COINGECKO_API_KEY
+        sync: false

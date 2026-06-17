@@ -7,7 +7,6 @@ import Footer from './components/layout/Footer';
 import { useAuthStore } from './store/authStore';
 import Spinner from './components/ui/Spinner';
 import ToastHost from './components/ui/Toast';
-import LiveConsole from './components/console/LiveConsole';
 import SupportChat from './components/support/SupportChat';
 import PriceTicker from './components/market/PriceTicker';
 
@@ -44,7 +43,7 @@ function App() {
       <PriceTicker />
       <div className="flex flex-1 min-h-0">
         <Sidebar />
-        <main className="flex-1 min-w-0 px-3 sm:px-6 py-4 pb-20 md:pb-6">
+        <main className="flex-1 min-w-0 px-3 sm:px-6 py-4 pb-24 md:pb-6">
           <Suspense
             fallback={
               <div className="flex items-center justify-center py-32">
@@ -89,7 +88,6 @@ function App() {
       </div>
       <Footer />
       <MobileBottomNav />
-      <LiveConsole />
       <SupportChat />
     </div>
   );
